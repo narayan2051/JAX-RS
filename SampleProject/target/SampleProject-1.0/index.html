@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js/jquery.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"/>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>        
+    </head>
+    <body>
+        <div class="container">
+        <h1>Hello World!!</h1>
+        <div id="contacts">
+                <table id="contact-table" class="table table-bordered table-striped table-hover">
+                <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Action</th>
+                </tr>          
+                </table>
+            
+        </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="contact-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <form id="contact-form">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="contact-dialog-title"></h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+              <label>Name</label>
+              <input type="text" name="name" id="contact-name" class="form-control"/>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>        
+        </div>
+        
+        
+        <script>
+            
+            $(document).on("ready",function(){
+              
+                loadContacts();
+               
+            });
+            
+            function loadContacts(){
+                $.getJSON("http://localhost:8080/SampleProject/api/contact",null,function(data){
+                var name="";
+                var id=0;
+                var email="";
+                var status=false;
+                
+                var $table=$("#contact-table");
+                $.each(data,function(i,o){//o is a object of lambda expression and i is a index
+                var $tr=$("<tr></tr>");    
+                $tr.append("<td>" + o.id+ "</td>");
+                $tr.append("<td>" + o.name+ "</td>");
+                $tr.append("<td>" + o.email+ "</td>");
+                
+                $tr.append("<td>" + o.status + "</td>");
+                $tr.append("<td><a href='javascript:void(0)' onclick='edit("+o.id + ")'>Edit</a></td>");
+                   $tr.appendTo($table);
+                });
+
+                //$("#contacts").html(name);
+//                $("#contacts").html(email);
+//                $("#contacts").html(status);
+               });                
+            }
+            
+            function edit(id){
+            $.getJSON("http://localhost:8080/SampleProject/api/contact/"+id,null,function(data){
+                
+                if(data!=null){
+                    $("#contact-name").val(data.name);
+                    $("#contact-dialog-title").html("Edit Contact");
+                    $("#contact-dialog").modal();
+                }
+            });
+            }
+        </script>
+        
+    </body>
+</html>
